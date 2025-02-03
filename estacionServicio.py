@@ -1,0 +1,43 @@
+import simpy
+import random
+import matplotlib.pyplot as plt
+
+TIEMPO_LLEGADA = 5
+TIEMPO_SERVICIO = 7
+TIEMPO_ABIERTO = 600
+
+tiempos = []
+vehiculos_en_sistema = []
+
+class Estacion:
+    def __init__(self, env, num_surtidores):
+        self.env = env
+        self.surtidores = simpy.Resource(env, num_surtidores)
+
+    def atencion_vehiculo(self, vehiculo):
+        tiempo = random.expovariate(1.0/TIEMPO_SERVICIO)
+        yield self.env.timeout(tiempo)
+        print(f'El vehiculo {vehiculo} atendido en {self.env.now:.2f}')
+
+def llegada_vehiculos(env, estacion):
+    vehiculo_id = 0
+    while True:
+        yield env.timeout(random.expovariate(1.0 / TIEMPO_LLEGADA))
+        vehiculo_id += 1
+        print(f'Vehiculo {vehiculo_id} llega a la estacion de servicio a los {env.now:.2f}')
+        env.process(estacion.atencion_vehiculo(vehiculo_id))
+
+env = simpy.Environment()
+estacion = Estacion(env, num_surtidores=2)
+
+env.process(llegada_vehiculos(env, estacion))
+env.run(until=TIEMPO_ABIERTO)
+
+plt.figure(figsize=(10,6))
+plt.step(tiempos, vehiculos_en_sistema,where='post', label="Vehiculos en el sistema")
+plt.title("Evolucion de vehiculos")
+plt.xlabel("Tiempo (Minutos)")
+plt.ylabel("Numero de vehiculos")
+plt.grid()
+plt.legend()
+plt.show()
