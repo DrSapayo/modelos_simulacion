@@ -58,11 +58,11 @@ estacion = Estacion(env, num_surtidores=2)
 env.process(llegada_vehiculos(env, estacion))
 env.run(until=TIEMPO_ABIERTO)
 
-plt.figure(figsize=(10,6))
-plt.step(tiempos, vehiculos_en_sistema,where='post', label="Vehiculos en el sistema")
-plt.title("Evolucion de vehiculos")
-plt.xlabel("Tiempo (Minutos)")
-plt.ylabel("Numero de vehiculos")
+plt.figure(figsize=(10,6)) #tamaño de la figura que se va a generar
+plt.step(tiempos, vehiculos_en_sistema,where='post', label="Vehiculos en el sistema") #se elije "step" para que sea un grafico de barras
+plt.title("Evolucion de vehiculos") #titulo de la figura
+plt.xlabel("Tiempo (Minutos)") #valor del eje x
+plt.ylabel("Numero de vehiculos") #valor del eje y
 plt.grid()
 plt.legend()
-plt.show()
+plt.show() #para que finalmente se muestre en pantalla
